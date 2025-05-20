@@ -1,0 +1,18 @@
+chat/
+├── cmd/
+│   ├── api/          # HTTP + WS
+│   └── migrator/
+├── internal/
+│   ├── config/
+│   ├── logger/
+│   ├── domain/
+│   │   ├── user/
+│   │   └── message/
+│   ├── repository/   # PostgreSQL
+│   ├── cache/        # Redis
+│   └── delivery/
+│       ├── http/
+│       └── ws/
+├── migrations/
+├── docker-compose.yml
+└── go.mod
