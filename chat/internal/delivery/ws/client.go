@@ -42,6 +42,7 @@ func (c *Client) readPump() {
 		c.hub.unregister <- c
 		c.conn.Close()
 	}()
+
 	c.conn.SetReadLimit(maxMessageSize)
 	c.conn.SetReadDeadline(time.Now().Add(pongWait))
 	c.conn.SetPongHandler(func(string) error { c.conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
@@ -60,8 +61,7 @@ func (c *Client) readPump() {
 			Text: string(messag),
 			TS:   time.Now(),
 		}
-		c.hub.history = append(c.hub.history, msg)
-		c.hub.broadcast <- msg
+		c.hub.incoming <- msg
 	}
 }
 
@@ -115,17 +115,4 @@ func (c *Client) writePump() {
 			}
 		}
 	}
-}
-
-func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
-	conn, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	client := &Client{hub: hub, conn: conn, send: make(chan message.Message)}
-	client.hub.register <- client
-
-	go client.writePump()
-	go client.readPump()
 }

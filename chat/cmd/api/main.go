@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/Hirogava/pentol/internal/cache"
 	"github.com/Hirogava/pentol/internal/delivery/ws"
 )
 
@@ -23,8 +24,9 @@ func main() {
 		cancel()
 	}()
 
-	hub := ws.NewHub()
-	go hub.Run()
+	pubsub := redis.NewPubSub("localhost:6379")
+	hub := ws.NewHub(pubsub)
+	go hub.Run(ctx)
 
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		ws.ServeWs(hub, w, r)
