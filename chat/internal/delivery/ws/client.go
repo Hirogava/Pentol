@@ -60,6 +60,7 @@ func (c *Client) readPump() {
 			Text: string(messag),
 			TS:   time.Now(),
 		}
+		c.hub.history = append(c.hub.history, msg)
 		c.hub.broadcast <- msg
 	}
 }

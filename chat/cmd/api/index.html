@@ -20,9 +20,6 @@
     function sendMessage() {
       const msg = document.getElementById("msg").value;
       conn.send(msg);
-      const li = document.createElement("li");
-      li.innerText = "→ " + msg;
-      log.appendChild(li);
     }
   </script>
 </body>
