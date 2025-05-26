@@ -6,6 +6,7 @@ import (
 
 	"github.com/Hirogava/pentol/internal/cache"
 	"github.com/Hirogava/pentol/internal/domain/message"
+	"github.com/google/uuid"
 )
 
 type Hub struct {
@@ -35,8 +36,9 @@ func (h *Hub) Run(ctx context.Context) {
 		select {
 		case client := <-h.register:
 			h.clients[client] = true
+			client.uid = uuid.NewString()
 			log.Printf("Client connected")
-			
+
 			history, err := h.pubsub.History(ctx, 50)
 			if err != nil {
 				log.Println("⚠️ Error loading history:", err)

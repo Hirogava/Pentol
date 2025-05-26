@@ -7,4 +7,5 @@ type Message struct {
     Text string     `json:"text"`
     TS   time.Time  `json:"ts"`
     SenderID string `json:"sender_id"`
+    UserUID string  `json:"user_uid"`
 }

@@ -35,6 +35,7 @@ type Client struct {
 	hub  *Hub
 	conn *websocket.Conn
 	send chan message.Message
+	uid  string
 }
 
 func (c *Client) readPump() {
@@ -60,6 +61,7 @@ func (c *Client) readPump() {
 			User: "anonymous",
 			Text: string(messag),
 			TS:   time.Now(),
+			UserUID: c.uid,
 		}
 		c.hub.incoming <- msg
 	}
