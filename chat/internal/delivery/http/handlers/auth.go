@@ -11,6 +11,10 @@ func InitAuth(r *mux.Router) {
 	r.HandleFunc("/register", Register).Methods("GET")
 }
 
-func Login(w http.ResponseWriter, r *http.Request) {}
+func Login(w http.ResponseWriter, r *http.Request) {
 
-func Register(w http.ResponseWriter, r *http.Request) {}
+}
+
+func Register(w http.ResponseWriter, r *http.Request) {
+	
+}
