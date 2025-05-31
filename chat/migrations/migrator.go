@@ -16,7 +16,7 @@ func Migrate(manager *repository.Manager, dbName string) {
 	}
 
 	m, err := migrate.NewWithDatabaseInstance(
-		fmt.Sprintf("file://files/migrations/files/%s", dbName),
+		fmt.Sprintf("file://files/migrations/files/%s/migrations", dbName),
 		"postgres",
 		driver,
 	)
