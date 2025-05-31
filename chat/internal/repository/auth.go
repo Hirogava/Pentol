@@ -10,8 +10,8 @@ func (manager *Manager) Login(email string, password string) (user.User, error) 
 	var user user.User
 	var hashedPassword string
 
-	query := `SELECT id, name, email, password_hash, phone FROM users WHERE email = $1;`
-	err := manager.Conn.QueryRow(query, email).Scan(&user.Id, &user.Name, &user.Email, &hashedPassword, &user.PhoneNumber)
+	query := `SELECT id, email, password_hash FROM auth_users WHERE email = $1;`
+	err := manager.Conn.QueryRow(query, email).Scan(&user.Id, &user.Email, &hashedPassword)
 	if err != nil {
 		return user, err
 	}
@@ -23,14 +23,14 @@ func (manager *Manager) Login(email string, password string) (user.User, error) 
 	return user, nil
 }
 
-func (manager *Manager) Register(user *user.User, password string) error {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+func (manager *Manager) Register(user *user.User) error {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
 
-	query := `INSERT INTO users (name, email, password_hash, phone) VALUES ($1, $2, $3, $4, $5) RETURNING id;`
-	err = manager.Conn.QueryRow(query, user.Name, user.Email, hashedPassword, user.PhoneNumber).Scan(&user.Id)
+	query := `INSERT INTO auth_users (email, password_hash) VALUES ($1, $2, $3) RETURNING id;`
+	err = manager.Conn.QueryRow(query, user.Email, hashedPassword).Scan(&user.Id)
 	if err != nil {
 		return err
 	}

@@ -1,5 +1,6 @@
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
+  auth_user_id INTEGER NOT NULL UNIQUE,
   name VARCHAR(255)
 );
 
