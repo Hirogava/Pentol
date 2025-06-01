@@ -33,7 +33,7 @@ func (manager *Manager) GetUserChats(userID int) ([]chat.Chat, error){
 
 	for rows.Next() {
 		var chat chat.Chat
-		err = rows.Scan(&chat.Id, &chat.User1Id, &chat.User1Username, &chat.User2Id, &chat.User2Username, &chat.Name, &chat.Description)
+		err = rows.Scan(&chat.Id, &chat.User1Id, &chat.User2Id, &chat.Name, &chat.Description)
 		if err != nil {
 			return chats, err
 		}
@@ -41,4 +41,24 @@ func (manager *Manager) GetUserChats(userID int) ([]chat.Chat, error){
 	}
 
 	return chats, nil
+}
+
+func (manager *Manager) DeleteMessage(id int) error{
+	_, err := manager.Conn.Exec(`DELETE FROM chat_messages WHERE id = $1`, id)
+	return err
+}
+
+func (manager *Manager) DeleteChat(id int) error{
+	_, err := manager.Conn.Exec(`DELETE FROM chats WHERE id = $1`, id)
+	if err != nil{
+		return err
+	}
+
+	_, err = manager.Conn.Exec(`DELETE FROM chat_desc WHERE chat_id = $1`, id)
+	if err != nil{
+		return err
+	}
+
+	_, err = manager.Conn.Exec(`DELETE FROM chat_messages WHERE chat_id = $1`, id)
+	return err
 }

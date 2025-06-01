@@ -1,15 +1,22 @@
 CREATE TABLE channels (
   id SERIAL PRIMARY KEY,
+  owner_id INTEGER
+);
+
+CREATE TABLE channel_desc (
+  id SERIAL PRIMARY KEY,
+  channel_id INTEGER NOT NULL,
   name VARCHAR(255),
   description TEXT,
-  owner_id INTEGER
+  created_at TIMESTAMP DEFAULT now(),
+  CONSTRAINT fk_channel FOREIGN KEY (channel_id) REFERENCES channels(id)
 );
 
 CREATE TABLE channel_posts (
   id SERIAL PRIMARY KEY,
   channel_id INTEGER NOT NULL,
   message TEXT,
-  time TIMESTAMP,
+  created_at TIMESTAMP DEFAULT now(),
   CONSTRAINT fk_channel FOREIGN KEY (channel_id) REFERENCES channels(id)
 );
 
