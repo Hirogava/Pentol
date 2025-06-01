@@ -16,3 +16,14 @@ func (manager *Manager) CreateUser(user *user.UserDesc) error {
 	_, err = manager.Conn.Exec(`INSERT INTO users_desc (user_id, description) VALUES ($1, $2)`, UserId, user.Description)
 	return err
 }
+
+func (manager *Manager) GetUsername(id int) (string, error) {
+	var username string
+
+	err := manager.Conn.QueryRow(`SELECT name FROM users WHERE id = $1`, id).Scan(&username)
+	if err != nil {
+		return "", err
+	}
+
+	return username, nil
+}
