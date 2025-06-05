@@ -8,5 +8,5 @@ CREATE TABLE users_desc (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL,
   description TEXT,
-  CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id)
+  CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

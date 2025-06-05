@@ -10,7 +10,7 @@ CREATE TABLE chat_desc (
   name VARCHAR(255),
   description TEXT,
   created_at TIMESTAMP DEFAULT now(),
-  CONSTRAINT fk_chat FOREIGN KEY (chat_id) REFERENCES chats(id)
+  CONSTRAINT fk_chat FOREIGN KEY (chat_id) REFERENCES chats(id) ON DELETE CASCADE
 );
 
 CREATE TABLE chat_messages (
@@ -18,5 +18,6 @@ CREATE TABLE chat_messages (
   chat_id INTEGER NOT NULL,
   sender_id INTEGER,
   message TEXT,
-  CONSTRAINT fk_chat FOREIGN KEY (chat_id) REFERENCES chats(id)
+  created_at TIMESTAMP DEFAULT now(),
+  CONSTRAINT fk_chat FOREIGN KEY (chat_id) REFERENCES chats(id) ON DELETE CASCADE
 );

@@ -16,7 +16,7 @@ func (manager *Manager) CreateChat(userChat *chat.Chat) error{
 }
 
 func (manager *Manager) CreateMessage(message *message.MessageNew) error{
-	err := manager.Conn.QueryRow(`INSERT INTO messages (chat_id, sender_id, message) VALUES ($1, $2, $3) RETURNING id`, message.ChatID, message.SenderID, message.Text).Scan(&message.Id)
+	err := manager.Conn.QueryRow(`INSERT INTO messages (chat_id, sender_id, created_at, message) VALUES ($1, $2. $3, $4) RETURNING id`, message.ChatID, message.SenderID, message.TS, message.Text).Scan(&message.Id)
 	return err
 }
 
@@ -43,7 +43,7 @@ func (manager *Manager) GetUserChats(userID int) ([]chat.Chat, error){
 	return chats, nil
 }
 
-func (manager *Manager) DeleteMessage(id int) error{
+func (manager *Manager) DeleteMessageFromChat(id int) error{
 	_, err := manager.Conn.Exec(`DELETE FROM chat_messages WHERE id = $1`, id)
 	return err
 }

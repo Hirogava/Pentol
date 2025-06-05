@@ -5,6 +5,7 @@ import (
 
 	ch "github.com/Hirogava/pentol/internal/domain/channel"
 	"github.com/Hirogava/pentol/internal/domain/message"
+	"github.com/Hirogava/pentol/internal/domain/user"
 )
 
 func (manager *Manager) CreateChannel(channel *ch.Channel) (error) {
@@ -36,12 +37,12 @@ func (manager *Manager) CreatePost(post *message.MessageNew) (error) {
 	return err
 }
 
-func (manager *Manager) DeletePost(postId, ownerId int) (error) {
+func (manager *Manager) DeletePostFromChannel(postId, ownerId int) (error) {
 	_, err := manager.Conn.Exec(`DELETE FROM channel_posts WHERE id = $1 AND channel_id IN (SELECT id FROM channels WHERE owner_id = $2)`, postId, ownerId)
 	return err
 }
 
-func (manager *Manager) AddUserToChannel(userId, channelId, ownerId int) (error) {
+func (manager *Manager) AddUsersToChannel(channelId, ownerId int, channel []*user.Member) (error) {
 	var isOwner bool
 	err := manager.Conn.QueryRow(
 		"SELECT EXISTS(SELECT 1 FROM channels WHERE id = $1 AND owner_id = $2)",
@@ -56,7 +57,13 @@ func (manager *Manager) AddUserToChannel(userId, channelId, ownerId int) (error)
 		return fmt.Errorf("forbidden")
 	}
 
-	_, err = manager.Conn.Exec(`INSERT INTO channel_users(user_id, channel_id) VALUES ($1, $2)`, userId, channelId)
+	for _, user := range channel {
+		_, err = manager.Conn.Exec(`INSERT INTO channel_users(channel_id, user_id) VALUES ($1, $2)`, channelId, user.Id)
+		if err != nil{
+			return err
+		}
+	}
+
 	return err
 }
 
