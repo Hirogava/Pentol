@@ -27,3 +27,13 @@ func (manager *Manager) GetUsername(id int) (string, error) {
 
 	return username, nil
 }
+
+func (manager *Manager) GetUser(id int) (*user.UserDesc, error) {
+	var user user.UserDesc
+	err := manager.Conn.QueryRow(`SELECT users.id, users.name, users_desc.description FROM users LEFT JOIN users_desc ON users.id = users_desc.user_id WHERE users.id = $1`, id).Scan(&user.Id, &user.Name, &user.Description)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}

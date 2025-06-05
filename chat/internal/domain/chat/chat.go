@@ -8,4 +8,5 @@ type Chat struct {
 	User1Username string `json:"user1_username"`
 	User2Id int `json:"user2_id"`
 	User2Username string `json:"user2_username"`
+	CreatedAt string `json:"created_at"`
 }

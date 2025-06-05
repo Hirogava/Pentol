@@ -89,3 +89,30 @@ func (manager *Manager) DeleteMessageFromGroup(groupId, messageId int) (error) {
 	_, err := manager.Conn.Exec(`DELETE FROM messages WHERE id = $1 AND group_id = $2`, messageId, groupId)
  	return err
 }
+
+func (manager *Manager) GetGroupMembers(groupId int) ([]*user.Member, error) {
+	members := []*user.Member{}
+	rows, err := manager.Conn.Query(`SELECT user_id FROM group_users WHERE group_id = $1`, groupId)
+	if err != nil{
+		return nil, err
+	}
+	for rows.Next() {
+    	var userId int
+		if err := rows.Scan(&userId); err != nil {
+			return nil, err
+		}
+		members = append(members, &user.Member{Id: userId})
+	}
+
+   	return members, nil
+}
+
+func (manager *Manager) GetGroupDesc(groupId int) (*group.GroupDesc, error) {
+	group := &group.GroupDesc{}
+	row := manager.Conn.QueryRow(`SELECT name, description, created_at FROM group_desc WHERE group_id = $1`, groupId)
+	if err := row.Scan(&group.Name, &group.Description, &group.CreatedAt); err != nil {
+		return nil, err
+	}
+
+	return group, nil
+}

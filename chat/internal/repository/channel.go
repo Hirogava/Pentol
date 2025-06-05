@@ -85,3 +85,9 @@ func (manager *Manager) DeleteUserFromChannel(userId, channelId, ownerId int) (e
 	_, err = manager.Conn.Exec(`DELETE FROM channel_users WHERE user_id = $1 AND channel_id = $2`, userId, channelId)
  	return err
 }
+
+func (manager *Manager) GetChannelDescById(channelId int) (*ch.ChannelDesc, error) {
+	var channel ch.ChannelDesc
+	err := manager.Conn.QueryRow(`SELECT name, description, created_at FROM channel_desc WHERE channel_id = $1`, channelId).Scan(&channel.Name, &channel.Description, &channel.CreatedAt)
+	return &channel, err
+}
